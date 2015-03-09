@@ -457,6 +457,19 @@ public class S3ProviderTest {
     }
 
     @Test(dependsOnMethods={"upload"})
+    public void setLastModifiedDate() throws FileSystemException {
+        FileObject backup = fsManager.resolveFile("s3://" + bucketName + "/test-place/backup.zip");
+        
+        long newModifiedTime = 999 + backup.getContent().getLastModifiedTime();
+        
+        backup.getContent().setLastModifiedTime(newModifiedTime);
+        assertEquals(backup.getContent().getLastModifiedTime(), newModifiedTime, "local last modified date");
+        
+        backup.refresh();
+        assertEquals(backup.getContent().getLastModifiedTime(), newModifiedTime, "remote last modified date");
+    }
+
+    @Test(dependsOnMethods={"upload"})
     public void getUrls() throws FileSystemException {
         FileObject backup = fsManager.resolveFile("s3://" + bucketName + "/test-place/backup.zip");
 
